@@ -1,0 +1,8 @@
+*.MOV
+*.avi
+.ipynb_checkpoints
+*.hog
+NeuroDesignVid01_aligned
+NeuroDesignVid02_aligned
+*.ipynb
+
