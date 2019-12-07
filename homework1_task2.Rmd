@@ -1,0 +1,126 @@
+---
+title: "1st homework prep"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+```{r}
+library("dplyr")
+library("ggplot2")
+library("tidyverse")
+```
+
+## Hyptothesis 1: Relation between positive and negative emotions
+
+```{r}
+video1 <- read.csv("NeuroDesignVid01.csv")
+video2 <- read.csv("NeuroDesignVid02.csv")
+```
+
+```{r}
+# remove all the frames where the face presumably couldn't be captured well enough
+video1 %>%
+  select(frame, timestamp, confidence, AU01_c, AU01_r, AU04_c, AU04_r, AU05_c, AU05_r, AU06_c, AU06_r, AU12_c, AU12_r) %>%
+  filter(confidence > 0.7) -> video1
+
+video2 %>%
+  select(frame, timestamp, confidence, AU01_c, AU01_r, AU04_c, AU04_r, AU05_c, AU05_r, AU06_c, AU06_r, AU12_c, AU12_r) %>%
+  filter(confidence > 0.7) -> video2
+```
+
+
+```{r}
+# Some data exploration
+
+plot_aus <- function(dataset, title) {
+  df1 <- dataset %>%
+    select(-timestamp, - confidence, -AU01_c, -AU04_c, -AU05_c, -AU06_c, -AU12_c) %>%
+    gather(key = "variable", value = "value", -frame)
+  
+  ggplot(df1, aes(x = frame, y = value)) + 
+    geom_line(aes(color = variable)) + 
+    scale_color_manual(values = c("blue1", "darkorchid1", "midnightblue", "darkorange2", "firebrick2"))  +
+    ggtitle(title)
+  
+}
+
+plot_in_steps <- function(dataset, title) {
+  for (i in 1:as.integer(nrow(dataset) / 1000)) {
+    start = (i - 1) * 1000
+    end = i * 1000
+    print(plot_aus(dataset[start:end,], title))
+  }  
+}
+
+# AU 01, 04, 05 correspond to happiness
+# AU 06, 12 correspond to negative emotions
+plot_in_steps(video1, "Video 1")
+plot_in_steps(video2, "Video 2")
+
+```
+
+```{r}
+# returns value greater 1 if more positive than negative emotions, a value smaller 1 otherwise
+get_relation_emotional_frequencies <- function(dataset) {
+  frequencies <- colMeans(select(dataset, AU01_c, AU04_c, AU05_c, AU06_c, AU12_c))
+  
+  f <- matrix(frequencies)
+  pos_mean <- mean(f[0:3])
+  neg_mean <- mean(f[3:5])
+  
+  return(pos_mean / neg_mean)
+}
+```
+
+```{r}
+# Creating artificial datasets because we only have two samples
+inflate_and_calc_rel_emotions <- function(df) {
+  rel = c()
+  for (i in 1:100) {
+    new_size <- as.integer(nrow(video1) / 5)
+    sample = sample_n(video1, new_size)
+    rel = c(rel, get_relation_emotional_frequencies(sample))
+  }  
+  return(rel)
+}
+
+rel1 <- inflate_and_calc_rel_emotions(video1)
+rel2 <- inflate_and_calc_rel_emotions(video2)
+```
+
+```{r}
+t.test(rel1, rel2)
+```
+
+## Hypothesis 2: Number of puzzle pieces left
+
+```{r}
+# Creating artificial dataset with number of puzzle pieces left, because the amount of pieces left in the original video can not be seen and we have too few samples
+pieces_left1 <- sample(0:20, 100, replace=TRUE)
+pieces_left2 <- sample(0:15, 100, replace=TRUE)
+```
+
+```{r}
+mean(pieces_left1)
+mean(pieces_left2)
+```
+
+```{r}
+t.test(pieces_left1, pieces_left2)
+```
+
+## Hypothesis 3: time needed for successful completion
+
+```{r}
+# creating artificial dataset with time spent in seconds
+time_needed1 <- sample(120:500, 100, replace=TRUE)
+time_needed2 <- sample(100:480, 100, replace=TRUE)
+
+mean(time_needed1)
+mean(time_needed2)
+```
+
+```{r}
+t.test(time_needed1, time_needed2)
+```
+
