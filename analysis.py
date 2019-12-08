@@ -64,9 +64,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sbn#
-
+from sklearn.linear_model import LinearRegression
 import zipfile
 from datetime import datetime
+plt.rcParams['figure.dpi'] = 300
 
 
 # %% [markdown]
@@ -147,8 +148,12 @@ results.summary()
 # the mean absolute acceleration between these two groups. This might indicate that participants in the experimental group were more creative and used more body language or it might be just by chance, since the sample size is so small.
 
 # %%
-plt.hist(data_exp)
-plt.hist(data_controll)
+ACC_UNIT = 1/64
+plt.hist(np.array(data_exp)*ACC_UNIT)
+plt.hist(np.array(data_controll)*ACC_UNIT)
+plt.title("Distribution of Absolute Acceleration")
+plt.legend(["experimental", "control"])
+plt.xlabel("acceleration [g]")
 
 # %% [markdown]
 # ## Bonus Hypothesis 2 (LinReg)
@@ -161,6 +166,10 @@ plt.plot(exp_2["HR"]["data"])
 plt.plot(contr_1["HR"]["data"])
 plt.plot(contr_2["HR"]["data"])
 plt.legend(["e1","e2","c1","c2"])
+plt.xlabel("time [s]")
+plt.ylabel("heartrate [BPM]")
+plt.title("Heartrate vs. Time")
+plt.show()
 
 # %%
 hr_exp = list(exp_1["HR"]["data"][10:]) + list(exp_2["HR"]["data"][10:])
@@ -168,13 +177,13 @@ hr_contr = list(contr_1["HR"]["data"][10:]) + list(contr_2["HR"]["data"][10:])
 
 y = [1] * len(hr_exp) + [0]*len(hr_contr)
 
-print(np.mean(contr_1["HR"]["data"][-180:]))
-print(np.mean(exp_1["HR"]["data"][-180:]))
-
 regressor = LinearRegression()  
 regressor.fit(np.array([y]).T,hr_exp+hr_contr)
 pred = regressor.predict([[0],[1]])
 plt.plot(pred)
+plt.xticks([0,1],["control","experimental"])
+plt.ylabel("heartrate [BPM]")
+plt.title("Heartrate control vs. experimental")
 
 # %% [markdown]
 # Result: The average heartrate in the control group was 91 and 94 in the experimental condition group. Contrary to our expectations, participants in the experimental group had a higher mean heartrate. This is probably just by chance, since we only had 2 participants in each group and did an between subjects study. Additionally, no baseline heartrate was measured, so it is not clear whether the higher heart rate was due to the activity, or whether the participants simply had higher resting heart rates. The heart rate of healthy humans at rest can range from around 50 to 100 bpm.
@@ -191,5 +200,7 @@ plt.hist(region_of_interest(c2_acc))
 #plt.hist(c1_acc[-180*ACC_SAMPLE_RATE:])
 #plt.hist(c2_acc[-180*ACC_SAMPLE_RATE:])
 """
+
+# %%
 
 # %%
