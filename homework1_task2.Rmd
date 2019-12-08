@@ -89,6 +89,11 @@ rel2 <- inflate_and_calc_rel_emotions(video2)
 ```
 
 ```{r}
+hist(rel1)
+hist(rel2)
+```
+
+```{r}
 t.test(rel1, rel2)
 ```
 
@@ -96,13 +101,13 @@ t.test(rel1, rel2)
 
 ```{r}
 # Creating artificial dataset with number of puzzle pieces left, because the amount of pieces left in the original video can not be seen and we have too few samples
-pieces_left1 <- sample(0:20, 100, replace=TRUE)
-pieces_left2 <- sample(0:15, 100, replace=TRUE)
+pieces_left1 <- rnorm(100, 10, 2)
+pieces_left2 <- rnorm(100, 8, 2)
 ```
 
 ```{r}
-mean(pieces_left1)
-mean(pieces_left2)
+hist(pieces_left1)
+hist(pieces_left2)
 ```
 
 ```{r}
@@ -113,11 +118,11 @@ t.test(pieces_left1, pieces_left2)
 
 ```{r}
 # creating artificial dataset with time spent in seconds
-time_needed1 <- sample(120:500, 100, replace=TRUE)
-time_needed2 <- sample(100:480, 100, replace=TRUE)
+time_needed1 <- rnorm(100, 300, 70)
+time_needed2 <- rnorm(100, 280, 70)
 
-mean(time_needed1)
-mean(time_needed2)
+hist(time_needed1)
+hist(time_needed2)
 ```
 
 ```{r}
