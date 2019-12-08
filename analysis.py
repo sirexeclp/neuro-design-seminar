@@ -107,8 +107,7 @@ exp_2   = read_e4_data("data/2019-10-21T14:32:27_A023B2.zip")
 # %% [markdown]
 # ## Bonus Hypothesis #1 (ANOVA)
 #
-# Hypothesis: **Participants in the experimental condition use more bodylanguage, thus move their hands more, than
-# participants in the controll group.**
+# Hypothesis: **Hypothesis: Participants in the experimental condition collaborate more, using more body language and moving their hands more, than participants in the control group.**
 
 # %%
 ACC_SAMPLE_RATE = int(exp_1["ACC"]["sample_rate"])
@@ -178,9 +177,8 @@ pred = regressor.predict([[0],[1]])
 plt.plot(pred)
 
 # %% [markdown]
-# Result: The everage heartrate in the controll group was 91 and 94 in the experimental group. Contrary to our expectations participants in the experimental group had a higher mean heartrate. This is probably just by chance, since we only had 2 participants in each group and did an between subjects study. The heartrate of healthy humans in rest can range from around 50 to 100 bpm.
-
-# %%
+# Result: The average heartrate in the control group was 91 and 94 in the experimental condition group. Contrary to our expectations, participants in the experimental group had a higher mean heartrate. This is probably just by chance, since we only had 2 participants in each group and did an between subjects study. Additionally, no baseline heartrate was measured, so it is not clear whether the higher heart rate was due to the activity, or whether the participants simply had higher resting heart rates. The heart rate of healthy humans at rest can range from around 50 to 100 bpm.
+# The largest problem we faced when analysing the data, was not being able to sync the data with the videos, thus not knowing when the actual experiment started and ended. We also did not record baseline measurements before or after the experiment as would be needed for EDA analysis.
 
 # %%
 #plt.plot(e1_acc[-180*ACC_SAMPLE_RATE:])
